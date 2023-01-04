@@ -179,7 +179,7 @@ Task("TestNetFxEngine")
     .OnError(exception => { UnreportedErrors.Add(exception.Message); })
     .Does<BuildSettings>(settings =>
     {
-        RunNUnitLiteTests(ENGINE_TESTS_PROJECT, settings.Configuration, "NET462");
+        RunNUnitLiteTests(ENGINE_TESTS_PROJECT, settings.Configuration, "net462");
     });
 
 //////////////////////////////////////////////////////////////////////

@@ -241,6 +241,18 @@ public class BuildSettings
 
     public void Display()
     {
+		Console.WriteLine("\nDIRECTORIES");
+        Console.WriteLine($"Project:         {PROJECT_DIR}");
+        Console.WriteLine($"Package:         {PACKAGE_DIR}");
+        Console.WriteLine($"Package Test:    {PACKAGE_TEST_DIR}");
+        Console.WriteLine($"Package Results: {PACKAGE_RESULT_DIR}");
+        Console.WriteLine($"Extensions:      {EXTENSIONS_DIR}");
+        
+        Console.WriteLine("\nSOLUTION AND PROJECTS");
+        Console.WriteLine($"  Solution:        {SOLUTION_FILE}");
+        Console.WriteLine($"  NetFx Runner:    {NETFX_CONSOLE_PROJECT}");
+        Console.WriteLine($"  NetCore Runner:  {NETCORE_CONSOLE_PROJECT}");
+
 		Console.WriteLine("\nTASKS");
 		Console.WriteLine("Target:                       " + Target);
 		Console.WriteLine("TasksToExecute:               " + string.Join(", ", TasksToExecute));
@@ -267,35 +279,34 @@ public class BuildSettings
 
         Console.WriteLine("\nPUBLISHING");
         Console.WriteLine("MyGet Push URL:               " + MYGET_PUSH_URL);
-        ShowApiKeyAvailability(MyGetApiKey);
+        DisplayApiKeyAvailability(MyGetApiKey);
+        DisplayShouldPublish(ShouldPublishToMyGet);
         Console.WriteLine("NuGet Push URL:               " + NUGET_PUSH_URL);
-        ShowApiKeyAvailability(NuGetApiKey);
+        DisplayApiKeyAvailability(NuGetApiKey);
+        DisplayShouldPublish(ShouldPublishToNuGet);
         Console.WriteLine("Chocolatey Push URL:          " + CHOCO_PUSH_URL);
-        ShowApiKeyAvailability(ChocolateyApiKey);
+        DisplayApiKeyAvailability(ChocolateyApiKey);
+        DisplayShouldPublish(ShouldPublishToChocolatey);
         
         if (string.IsNullOrEmpty(GitHubAccessToken))
             Console.WriteLine("GitHubAccessToken:            NOT Available");
         else
             Console.WriteLine("GitHubAccessToken:            Available");
-
-		Console.WriteLine("\nDIRECTORIES");
-        Console.WriteLine($"Project:         {PROJECT_DIR}");
-        Console.WriteLine($"Package:         {PACKAGE_DIR}");
-        Console.WriteLine($"Package Test:    {PACKAGE_TEST_DIR}");
-        Console.WriteLine($"Package Results: {PACKAGE_RESULT_DIR}");
-        Console.WriteLine($"Extensions:      {EXTENSIONS_DIR}");
-        Console.WriteLine();
-        Console.WriteLine("Solution and Projects");
-        Console.WriteLine($"  Solution:        {SOLUTION_FILE}");
-        Console.WriteLine($"  NetFx Runner:    {NETFX_CONSOLE_PROJECT}");
-        Console.WriteLine($"  NetCore Runner:  {NETCORE_CONSOLE_PROJECT}");
     }
 
-    private void ShowApiKeyAvailability(string apikey)
+    private void DisplayApiKeyAvailability(string apikey)
     {
         if (string.IsNullOrEmpty(apikey))
             Console.WriteLine("      API Key:                NOT Available");
         else
             Console.WriteLine("      API Key:                Available");
+    }
+
+    private void DisplayShouldPublish(bool shouldPublish)
+    {
+        if (shouldPublish)
+            Console.WriteLine("      ShouldPublish?          YES");
+        else
+            Console.WriteLine("      ShouldPublish?          NO");
     }
 }
