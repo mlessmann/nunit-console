@@ -9,6 +9,7 @@
     <DebugType>Full</DebugType>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <NoWarn>1505</NoWarn>
+    <NuGetAudit>false</NuGetAudit>
   </PropertyGroup>
 
   <PropertyGroup>

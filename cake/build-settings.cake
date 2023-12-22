@@ -58,6 +58,11 @@ public class BuildSettings
             "Run mock-assembly.dll under .NET 7.0",
             $"src/TestData/mock-assembly/bin/{Configuration}/net7.0/mock-assembly.dll",
             MockAssemblyExpectedResult(1));
+        Net80Test = new PackageTest(
+            "Net80Test",
+            "Run mock-assembly.dll under .NET 8.0",
+            $"src/TestData/mock-assembly/bin/{Configuration}/net8.0/mock-assembly.dll",
+            MockAssemblyExpectedResult(1));
         Net35X86Test = new PackageTest(
             "Net35X86Test",
             "Run mock-assembly-x86.dll under .NET 3.5",
@@ -249,6 +254,7 @@ public class BuildSettings
     public PackageTest Net50Test { get; }
     public PackageTest Net60Test { get; }
     public PackageTest Net70Test { get; }
+    public PackageTest Net80Test { get; }
     // X86 Tests
     public PackageTest Net35X86Test { get; }
     public PackageTest Net462X86Test { get; }

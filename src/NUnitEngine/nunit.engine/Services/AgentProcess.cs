@@ -132,6 +132,10 @@ namespace NUnit.Engine.Services
                 case FrameworkIdentifiers.NetCoreApp:
                     switch (major)
                     {
+                        case 8:
+                            runtimeIdentifier = "net8.0";
+                            agentName = agentSubDir = "nunit-agent-net80";
+                            break;
                         case 7:
                             runtimeIdentifier = "net7.0";
                             agentName = agentSubDir = "nunit-agent-net70";

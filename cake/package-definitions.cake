@@ -101,7 +101,7 @@ public abstract class PackageDefinition
 
         if (allOK)
             WriteInfo("All checks passed!");
-        else 
+        else
             throw new Exception("Verification failed!");
     }
 
@@ -265,6 +265,9 @@ public class NUnitConsoleRunnerNuGetPackage : NuGetPackageDefinition
                 "nunit.engine.core.dll", "nunit.engine.api.dll", "testcentric.engine.metadata.dll"),
             HasDirectory("tools/agents/nunit-agent-net70").WithFiles(
                 "nunit-agent-net70.dll", "nunit-agent-net70.dll.config", "Microsoft.Extensions.DependencyModel.dll",
+                "nunit.engine.core.dll", "nunit.engine.api.dll", "testcentric.engine.metadata.dll"),,
+            HasDirectory("tools/agents/nunit-agent-net80").WithFiles(
+                "nunit-agent-net80.dll", "nunit-agent-net80.dll.config", "Microsoft.Extensions.DependencyModel.dll",
                 "nunit.engine.core.dll", "nunit.engine.api.dll", "testcentric.engine.metadata.dll"),
         };
         SymbolChecks = new PackageCheck[] {
@@ -281,6 +284,8 @@ public class NUnitConsoleRunnerNuGetPackage : NuGetPackageDefinition
             HasDirectory("tools/agents/net6.0").WithFiles(
                 "nunit-agent.pdb", "nunit.engine.core.pdb", "nunit.engine.api.pdb"),
             HasDirectory("tools/agents/net7.0").WithFiles(
+                "nunit-agent.pdb", "nunit.engine.core.pdb", "nunit.engine.api.pdb"),
+            HasDirectory("tools/agents/net8.0").WithFiles(
                 "nunit-agent.pdb", "nunit.engine.core.pdb", "nunit.engine.api.pdb")
         };
         TestExecutable = "tools/nunit4-console.exe";
@@ -411,7 +416,7 @@ public abstract class ChocolateyPackageDefinition : PackageDefinition
     public override string PackageFileName => $"{PackageId}.{PackageVersion}.nupkg";
     public override string InstallDirectory => PACKAGE_TEST_DIR + $"choco/{PackageId}/";
     public override string ResultDirectory => PACKAGE_RESULT_DIR + $"choco/{PackageId}/";
-    
+
     protected override void doBuildPackage()
     {
         _context.ChocolateyPack(PackageSource,
@@ -457,6 +462,8 @@ public class NUnitConsoleRunnerChocolateyPackage : ChocolateyPackageDefinition
                 "nunit-agent-net60.dll", "nunit-agent-net60.dll.config"),
             HasDirectory("tools/agents/nunit-agent-net70").WithFiles(
                 "nunit-agent-net70.dll", "nunit-agent-net70.dll.config"),
+            HasDirectory("tools/agents/nunit-agent-net80").WithFiles(
+                "nunit-agent-net80.dll", "nunit-agent-net80.dll.config"),
         };
         TestExecutable = "tools/nunit4-console.exe";
         PackageTests = settings.StandardRunnerTests;
@@ -469,7 +476,7 @@ public class NUnitConsoleRunnerChocolateyPackage : ChocolateyPackageDefinition
 
 public abstract class MsiPackageDefinition : PackageDefinition
 {
-    protected MsiPackageDefinition(BuildSettings settings) : base(settings) 
+    protected MsiPackageDefinition(BuildSettings settings) : base(settings)
     {
         // Required version format for MSI
         PackageVersion = settings.BuildVersion.SemVer;
@@ -532,6 +539,8 @@ public class NUnitConsoleMsiPackage : MsiPackageDefinition
                 "nunit-agent-net60.dll", "nunit-agent-net60.dll.config"),
             HasDirectory("NUnit.org/nunit-console/agents/nunit-agent-net70").WithFiles(
                 "nunit-agent-net70.dll", "nunit-agent-net70.dll.config"),
+            HasDirectory("NUnit.org/nunit-console/agents/nunit-agent-net80").WithFiles(
+                "nunit-agent-net80.dll", "nunit-agent-net80.dll.config"),
             HasDirectory("Nunit.org/nunit-console/addins").WithFile("nunit-project-loader.dll")
         };
         TestExecutable = "NUnit.org/nunit-console/nunit4-console.exe";
@@ -552,7 +561,7 @@ public abstract class ZipPackageDefinition : PackageDefinition
     public override string ResultDirectory => PACKAGE_RESULT_DIR + $"zip/{PackageId}/";
 
     protected abstract string ZipImageDirectory { get; }
-    
+
     protected override void doBuildPackage()
     {
         _context.Zip(ZipImageDirectory, PACKAGE_DIR + PackageFileName);
@@ -607,6 +616,11 @@ public class NUnitConsoleZipPackage : ZipPackageDefinition
                 "nunit.engine.core.pdb", "nunit.engine.api.pdb"),
             HasDirectory("bin/agents/nunit-agent-net70").WithFiles(
                  "nunit-agent-net70.dll", "nunit-agent-net70.dll.config",
+                "nunit.engine.core.dll", "nunit.engine.api.dll", "testcentric.engine.metadata.dll",
+                "Microsoft.Extensions.DependencyModel.dll",
+                "nunit.engine.core.pdb", "nunit.engine.api.pdb"),
+            HasDirectory("bin/agents/nunit-agent-net80").WithFiles(
+                 "nunit-agent-net80.dll", "nunit-agent-net80.dll.config",
                 "nunit.engine.core.dll", "nunit.engine.api.dll", "testcentric.engine.metadata.dll",
                 "Microsoft.Extensions.DependencyModel.dll",
                 "nunit.engine.core.pdb", "nunit.engine.api.pdb"),

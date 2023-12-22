@@ -4,6 +4,7 @@
     <RootNamespace>NUnit.TestData</RootNamespace>
     <TargetFrameworks>net35;net462;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <NuGetAudit>false</NuGetAudit>
   </PropertyGroup>
 
   <PropertyGroup>
