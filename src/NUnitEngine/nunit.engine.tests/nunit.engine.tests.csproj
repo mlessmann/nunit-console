@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
+
   <PropertyGroup>
     <RootNamespace>NUnit.Engine.Tests</RootNamespace>
     <TargetFrameworks>net462;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
@@ -10,6 +10,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\nunit.snk</AssemblyOriginatorKeyFile>
     <DebugType>Full</DebugType>
+    <NuGetAudit>false</NuGetAudit>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -23,28 +24,28 @@
     <PackageReference Include="NUnitLite" Version="3.13.2" />
     <PackageReference Include="NSubstitute" Version="2.0.3" />
   </ItemGroup>
-  
+
   <ItemGroup Condition="'$(TargetFramework)'=='net462'">
     <Reference Include="System.Configuration" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Web" />
   </ItemGroup>
-  
+
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.1' or '$(TargetFramework)'=='netcoreapp3.1'">
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\mock-assembly\mock-assembly.csproj" />
     <ProjectReference Include="..\notest-assembly\notest-assembly.csproj" />
     <ProjectReference Include="..\nunit.engine.api\nunit.engine.api.csproj" />
     <ProjectReference Include="..\nunit.engine\nunit.engine.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Content Include="EngineTests.nunit">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

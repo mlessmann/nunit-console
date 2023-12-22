@@ -73,7 +73,8 @@ public class NUnitConsoleRunnerNuGetPackage : NuGetPackageDefinition
             HasDirectory("tools/agents/netcoreapp3.1").WithFiles(AGENT_FILES_NETCORE).AndFile("nunit.agent.addins"),
             HasDirectory("tools/agents/net5.0").WithFiles(AGENT_FILES_NETCORE).AndFile("nunit.agent.addins"),
             HasDirectory("tools/agents/net6.0").WithFiles(AGENT_FILES_NETCORE).AndFile("nunit.agent.addins"),
-            HasDirectory("tools/agents/net7.0").WithFiles(AGENT_FILES_NETCORE).AndFile("nunit.agent.addins")
+            HasDirectory("tools/agents/net7.0").WithFiles(AGENT_FILES_NETCORE).AndFile("nunit.agent.addins"),
+            HasDirectory("tools/agents/net8.0").WithFiles(AGENT_FILES_NETCORE).AndFile("nunit.agent.addins")
         };
         SymbolChecks = new PackageCheck[] {
             HasDirectory("tools").WithFiles(ENGINE_PDB_FILES).AndFile("nunit3-console.pdb"),
@@ -82,7 +83,8 @@ public class NUnitConsoleRunnerNuGetPackage : NuGetPackageDefinition
             HasDirectory("tools/agents/netcoreapp3.1").WithFiles(AGENT_PDB_FILES_NETCORE),
             HasDirectory("tools/agents/net5.0").WithFiles(AGENT_PDB_FILES_NETCORE),
             HasDirectory("tools/agents/net6.0").WithFiles(AGENT_PDB_FILES_NETCORE),
-            HasDirectory("tools/agents/net7.0").WithFiles(AGENT_PDB_FILES_NETCORE)
+            HasDirectory("tools/agents/net7.0").WithFiles(AGENT_PDB_FILES_NETCORE),
+            HasDirectory("tools/agents/net8.0").WithFiles(AGENT_PDB_FILES_NETCORE)
         };
         TestExecutable = "tools/nunit3-console.exe";
         PackageTests = settings.StandardRunnerTests;
@@ -192,7 +194,7 @@ public abstract class ChocolateyPackageDefinition : PackageDefinition
     public override string PackageFileName => $"{PackageId}.{PackageVersion}.nupkg";
     public override string InstallDirectory => PACKAGE_TEST_DIR + $"choco/{PackageId}/";
     public override string ResultDirectory => PACKAGE_RESULT_DIR + $"choco/{PackageId}/";
-    
+
     protected override void doBuildPackage()
     {
         _context.ChocolateyPack(PackageSource,
@@ -226,7 +228,8 @@ public class NUnitConsoleRunnerChocolateyPackage : ChocolateyPackageDefinition
             HasDirectory("tools/agents/netcoreapp3.1").WithFiles(AGENT_FILES_NETCORE).AndFile("nunit.agent.addins"),
             HasDirectory("tools/agents/net5.0").WithFiles(AGENT_FILES_NETCORE).AndFile("nunit.agent.addins"),
             HasDirectory("tools/agents/net6.0").WithFiles(AGENT_FILES_NETCORE).AndFile("nunit.agent.addins"),
-            HasDirectory("tools/agents/net7.0").WithFiles(AGENT_FILES_NETCORE).AndFile("nunit.agent.addins")
+            HasDirectory("tools/agents/net7.0").WithFiles(AGENT_FILES_NETCORE).AndFile("nunit.agent.addins"),
+            HasDirectory("tools/agents/net8.0").WithFiles(AGENT_FILES_NETCORE).AndFile("nunit.agent.addins")
         };
         TestExecutable = "tools/nunit3-console.exe";
         PackageTests = settings.StandardRunnerTests;
@@ -239,7 +242,7 @@ public class NUnitConsoleRunnerChocolateyPackage : ChocolateyPackageDefinition
 
 public abstract class MsiPackageDefinition : PackageDefinition
 {
-    protected MsiPackageDefinition(BuildSettings settings) : base(settings) 
+    protected MsiPackageDefinition(BuildSettings settings) : base(settings)
     {
         // Required version format for MSI
         PackageVersion = settings.BuildVersion.SemVer;
@@ -291,6 +294,7 @@ public class NUnitConsoleMsiPackage : MsiPackageDefinition
             HasDirectory("NUnit.org/nunit-console/agents/net5.0").WithFile("nunit-agent.dll"),
             HasDirectory("NUnit.org/nunit-console/agents/net6.0").WithFile("nunit-agent.dll"),
             HasDirectory("NUnit.org/nunit-console/agents/net7.0").WithFile("nunit-agent.dll"),
+            HasDirectory("NUnit.org/nunit-console/agents/net8.0").WithFile("nunit-agent.dll"),
             HasDirectory("Nunit.org/nunit-console/addins").WithFiles("nunit.core.dll", "nunit.core.interfaces.dll", "nunit.v2.driver.dll", "nunit-project-loader.dll", "vs-project-loader.dll", "nunit-v2-result-writer.dll", "teamcity-event-listener.dll")
         };
         TestExecutable = "NUnit.org/nunit-console/nunit3-console.exe";
@@ -311,7 +315,7 @@ public abstract class ZipPackageDefinition : PackageDefinition
     public override string ResultDirectory => PACKAGE_RESULT_DIR + $"zip/{PackageId}/";
 
     protected abstract string ZipImageDirectory { get; }
-    
+
     protected override void doBuildPackage()
     {
         _context.Zip(ZipImageDirectory, PackageFilePath);
@@ -337,7 +341,8 @@ public class NUnitConsoleZipPackage : ZipPackageDefinition
             HasDirectory("bin/agents/net462").WithFiles(AGENT_FILES).AndFiles(AGENT_PDB_FILES),
             HasDirectory("bin/agents/net5.0").WithFiles(AGENT_FILES_NETCORE).AndFiles(AGENT_PDB_FILES_NETCORE),
             HasDirectory("bin/agents/net6.0").WithFiles(AGENT_FILES_NETCORE).AndFiles(AGENT_PDB_FILES_NETCORE),
-            HasDirectory("bin/agents/net7.0").WithFiles(AGENT_FILES_NETCORE).AndFiles(AGENT_PDB_FILES_NETCORE)
+            HasDirectory("bin/agents/net7.0").WithFiles(AGENT_FILES_NETCORE).AndFiles(AGENT_PDB_FILES_NETCORE),
+            HasDirectory("bin/agents/net8.0").WithFiles(AGENT_FILES_NETCORE).AndFiles(AGENT_PDB_FILES_NETCORE)
         };
         TestExecutable = "bin/nunit3-console.exe";
         PackageTests = settings.StandardRunnerTests.Concat(new [] { settings.NUnitProjectTest });

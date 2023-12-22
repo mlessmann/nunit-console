@@ -104,9 +104,9 @@ namespace NUnit.Engine.Services
 
             if (!Directory.Exists(agentsDir))
             {
-                // When developing and running in the output directory, "agents" is a 
+                // When developing and running in the output directory, "agents" is a
                 // sibling directory the one holding the agent (e.g. net20). This is a
-                // bit of a kluge, but it's necessary unless we change the binary 
+                // bit of a kluge, but it's necessary unless we change the binary
                 // output directory to match the distribution structure.
                 agentsDir = Path.Combine(Path.GetDirectoryName(engineDir), "agents");
                 log.Debug("Assuming test run in project output directory");
@@ -125,7 +125,7 @@ namespace NUnit.Engine.Services
                     agentName = requires32Bit ? "nunit-agent-x86.exe" : "nunit-agent.exe";
                     break;
                 case RuntimeType.NetCore:
-                    runtimeDir = major >= 7 ? "net7.0" : major == 6 ? "net6.0" : major == 5 ? "net5.0" : "netcoreapp3.1";
+                    runtimeDir = major >= 8 ? "net8.0" : major == 7 ? "net7.0" : major == 6 ? "net6.0" : major == 5 ? "net5.0" : "netcoreapp3.1";
                     agentName = "nunit-agent.dll";
                     break;
                 default:
