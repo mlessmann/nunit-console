@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <RootNamespace>nunit.agent</RootNamespace>
@@ -12,6 +12,7 @@
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -23,7 +24,7 @@
   <ItemGroup Condition="'$(TargetFramework)'=='net20' or '$(TargetFramework)'=='net462'">
     <Reference Include="System.Runtime.Remoting" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Compile Include="..\nunit.engine.core\Internal\ExceptionHelper.cs" Link="ExceptionHelper.cs" />
   </ItemGroup>
@@ -33,7 +34,7 @@
       <Link>nunit.ico</Link>
     </Content>
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\nunit.engine.api\nunit.engine.api.csproj" />
     <ProjectReference Include="..\nunit.engine.core\nunit.engine.core.csproj" />
