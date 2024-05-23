@@ -40,6 +40,11 @@
     <ProjectReference Include="..\nunit.engine.core\nunit.engine.core.csproj" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
+  </ItemGroup>
+
   <Target Name="CopyAgentFiles" AfterTargets="PostBuildEvent">
     <PropertyGroup>
       <ConsoleDestination>$([System.IO.Path]::GetFullPath("../../NUnitConsole/nunit3-console/bin/$(Configuration)/net462/agents/$(TargetFramework)/"))</ConsoleDestination>
