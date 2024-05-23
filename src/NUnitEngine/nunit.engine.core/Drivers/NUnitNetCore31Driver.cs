@@ -8,6 +8,7 @@ using System.IO;
 using NUnit.Engine.Internal;
 using System.Reflection;
 using NUnit.Engine.Extensibility;
+using System.Runtime.Loader;
 
 namespace NUnit.Engine.Drivers
 {
@@ -38,7 +39,8 @@ namespace NUnit.Engine.Drivers
         Assembly _frameworkAssembly;
         object _frameworkController;
         Type _frameworkControllerType;
-        TestAssemblyLoadContext _assemblyLoadContext;
+        AssemblyLoadContext _assemblyLoadContext;
+        string assemblyFullPath;
 
         /// <summary>
         /// An id prefix that will be passed to the test framework and used as part of the
@@ -57,20 +59,22 @@ namespace NUnit.Engine.Drivers
             log.Debug($"Loading {assemblyPath}");
             var idPrefix = string.IsNullOrEmpty(ID) ? "" : ID + "-";
 
-            assemblyPath = Path.GetFullPath(assemblyPath);  //AssemblyLoadContext requires an absolute path
-            _assemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
+            assemblyFullPath = Path.GetFullPath(assemblyPath);  //AssemblyLoadContext requires an absolute path
+            //_assemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
+            _assemblyLoadContext = AssemblyLoadContext.Default;
+            _assemblyLoadContext.Resolving += this.AssemblyLoadContext_Resolving;
 
             try
             {
-                _testAssembly = _assemblyLoadContext.LoadFromAssemblyPath(assemblyPath);
+                _testAssembly = _assemblyLoadContext.LoadFromAssemblyPath(assemblyFullPath);
             }
             catch (Exception e)
             {
-                var msg = string.Format(FAILED_TO_LOAD_TEST_ASSEMBLY, assemblyPath);
+                var msg = string.Format(FAILED_TO_LOAD_TEST_ASSEMBLY, assemblyFullPath);
                 log.Error(msg);
                 throw new NUnitEngineException(msg, e);
             }
-            log.Debug($"Loaded {assemblyPath}");
+            log.Debug($"Loaded {assemblyFullPath}");
 
             var nunitRef = _testAssembly.GetReferencedAssemblies().FirstOrDefault(reference => reference.Name.Equals("nunit.framework", StringComparison.OrdinalIgnoreCase));
             if (nunitRef == null)
@@ -102,6 +106,18 @@ namespace NUnit.Engine.Drivers
 
             log.Info("Loading {0} - see separate log file", _testAssembly.FullName);
             return ExecuteMethod(LOAD_METHOD) as string;
+        }
+
+        private Assembly AssemblyLoadContext_Resolving(AssemblyLoadContext loadContext, AssemblyName assemblyName)
+        {
+            var folder = Path.GetDirectoryName(assemblyFullPath);
+            var dllName = Path.Combine(folder, assemblyName.Name + ".dll");
+            if (File.Exists(dllName))
+            {
+                return AssemblyLoadContext.Default.LoadFromAssemblyPath(dllName);
+            }
+
+            return null;
         }
 
         /// <summary>
