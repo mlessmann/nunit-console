@@ -20,6 +20,7 @@ namespace NUnit.Engine.Internal
         private readonly ICompilationAssemblyResolver _assemblyResolver;
         private readonly DependencyContext _dependencyContext;
         private readonly AssemblyLoadContext _loadContext;
+        private readonly AssemblyDependencyResolver _runtimeResolver;
 
         private static readonly string INSTALL_DIR = GetDotNetInstallDirectory();
         private static readonly string WINDOWS_DESKTOP_DIR = Path.Combine(INSTALL_DIR, "shared", "Microsoft.WindowsDesktop.App");
@@ -39,6 +40,8 @@ namespace NUnit.Engine.Internal
         {
             _loadContext = loadContext;
             _dependencyContext = DependencyContext.Load(loadContext.LoadFromAssemblyPath(assemblyPath));
+
+            _runtimeResolver = new AssemblyDependencyResolver(assemblyPath);
 
             _assemblyResolver = new CompositeCompilationAssemblyResolver(new ICompilationAssemblyResolver[]
             {
@@ -62,6 +65,13 @@ namespace NUnit.Engine.Internal
 
         private Assembly OnResolving(AssemblyLoadContext context, AssemblyName name)
         {
+            var runtimeResolverPath = _runtimeResolver.ResolveAssemblyToPath(name);
+            if (string.IsNullOrEmpty(runtimeResolverPath) == false &&
+                File.Exists(runtimeResolverPath))
+            {
+                return context.LoadFromAssemblyPath(runtimeResolverPath);
+            }
+
             foreach (var library in _dependencyContext.RuntimeLibraries)
             {
                 var wrapper = new CompilationLibrary(

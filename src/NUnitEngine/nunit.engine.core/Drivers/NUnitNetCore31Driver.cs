@@ -9,6 +9,7 @@ using NUnit.Engine.Internal;
 using System.Reflection;
 using NUnit.Engine.Extensibility;
 using System.Runtime.Loader;
+using System.Xml.Linq;
 
 namespace NUnit.Engine.Drivers
 {
@@ -41,6 +42,8 @@ namespace NUnit.Engine.Drivers
         Type _frameworkControllerType;
         AssemblyLoadContext _assemblyLoadContext;
         string assemblyFullPath;
+        AssemblyDependencyResolver _runtimeResolver;
+        TestAssemblyResolver assemblyResolver;
 
         /// <summary>
         /// An id prefix that will be passed to the test framework and used as part of the
@@ -62,7 +65,9 @@ namespace NUnit.Engine.Drivers
             assemblyFullPath = Path.GetFullPath(assemblyPath);  //AssemblyLoadContext requires an absolute path
             //_assemblyLoadContext = new TestAssemblyLoadContext(assemblyPath);
             _assemblyLoadContext = AssemblyLoadContext.Default;
-            _assemblyLoadContext.Resolving += this.AssemblyLoadContext_Resolving;
+            _runtimeResolver = new AssemblyDependencyResolver(assemblyFullPath);
+            assemblyResolver = new TestAssemblyResolver(_assemblyLoadContext, assemblyFullPath);
+            _assemblyLoadContext.Resolving += this._assemblyLoadContext_Resolving;
 
             try
             {
@@ -108,16 +113,46 @@ namespace NUnit.Engine.Drivers
             return ExecuteMethod(LOAD_METHOD) as string;
         }
 
-        private Assembly AssemblyLoadContext_Resolving(AssemblyLoadContext loadContext, AssemblyName assemblyName)
+        private Assembly _assemblyLoadContext_Resolving(AssemblyLoadContext loadContext, AssemblyName name)
         {
-            var folder = Path.GetDirectoryName(assemblyFullPath);
-            var dllName = Path.Combine(folder, assemblyName.Name + ".dll");
-            if (File.Exists(dllName))
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var loadedAssembly = assemblies.FirstOrDefault(x => x.GetName().Name == name.Name);
+            if (loadedAssembly != null)
             {
-                return AssemblyLoadContext.Default.LoadFromAssemblyPath(dllName);
+                return loadedAssembly;
             }
 
-            return null;
+            var runtimeResolverPath = _runtimeResolver.ResolveAssemblyToPath(name);
+            if (string.IsNullOrEmpty(runtimeResolverPath) == false &&
+                File.Exists(runtimeResolverPath))
+            {
+                loadedAssembly = loadContext.LoadFromAssemblyPath(runtimeResolverPath);
+            }
+
+            if (loadedAssembly != null)
+            {
+                return loadedAssembly;
+            }
+
+            loadedAssembly = assemblyResolver.Resolve(loadContext, name);
+            if (loadedAssembly != null)
+            {
+                return loadedAssembly;
+            }
+
+            // Load assemblies that are dependencies, and in the same folder as the test assembly,
+            // but are not fully specified in test assembly deps.json file. This happens when the
+            // dependencies reference in the csproj file has CopyLocal=false, and for example, the
+            // reference is a projectReference and has the same output directory as the parent.
+
+            var testDir = Path.GetDirectoryName(assemblyFullPath);
+            var fileNameInTestDir = Path.Combine(testDir, name.Name + ".dll");
+            if (File.Exists(fileNameInTestDir))
+            {
+                return loadContext.LoadFromAssemblyPath(fileNameInTestDir);
+            }
+
+            return loadedAssembly;
         }
 
         /// <summary>
