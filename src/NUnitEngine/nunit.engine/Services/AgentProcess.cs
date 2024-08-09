@@ -63,8 +63,8 @@ namespace NUnit.Engine.Services
             }
             else if (TargetRuntime.Runtime == RuntimeType.NetCore)
             {
-                StartInfo.FileName = "dotnet";
-                StartInfo.Arguments = $"\"{AgentExePath}\" {AgentArgs}";
+                StartInfo.FileName = AgentExePath;
+                StartInfo.Arguments = AgentArgs.ToString();
                 StartInfo.LoadUserProfile = loadUserProfile;
 
                 // TODO: Remove the windows limitation and the use of a hard-coded path.
@@ -126,7 +126,7 @@ namespace NUnit.Engine.Services
                     break;
                 case RuntimeType.NetCore:
                     runtimeDir = major >= 8 ? "net8.0" : major == 7 ? "net7.0" : major == 6 ? "net6.0" : major == 5 ? "net5.0" : "netcoreapp3.1";
-                    agentName = "nunit-agent.dll";
+                    agentName = "nunit-agent.exe";
                     break;
                 default:
                     log.Error($"Unknown runtime type: {targetRuntime.Runtime}");
